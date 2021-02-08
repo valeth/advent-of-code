@@ -39,10 +39,10 @@ fn leftrotate(x: u32, amount: usize) -> u32 {
     (x << amount) | (x >> (32 - amount))
 }
 
-pub fn hexdigest<B>(message: B) -> String
+pub fn digest<B>(message: B) -> [u8; 16]
     where B: AsRef<[u8]>
 {
-    use std::{convert::TryInto, fmt::Write};
+    use std::convert::TryInto;
 
     let message = message.as_ref();
     let message_len = message.len();
@@ -86,10 +86,15 @@ pub fn hexdigest<B>(message: B) -> String
         d0 = d0.wrapping_add(d);
     }
 
-    let digest = [a0.to_le_bytes(), b0.to_le_bytes(), c0.to_le_bytes(), d0.to_le_bytes()].concat();
-    let hex_len = digest.len();
+    [a0.to_le_bytes(), b0.to_le_bytes(), c0.to_le_bytes(), d0.to_le_bytes()].concat().try_into().unwrap()
+}
 
-    digest.into_iter().fold(String::with_capacity(hex_len), |mut acc, val| {
+pub fn hexdigest<B>(message: B) -> String
+    where B: AsRef<[u8]>
+{
+    use std::fmt::Write;
+
+    digest(message).iter().fold(String::with_capacity(16), |mut acc, val| {
         write!(acc, "{:02x}", val).unwrap();
         acc
     })
