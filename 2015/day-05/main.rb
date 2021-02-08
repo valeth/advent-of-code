@@ -3,8 +3,6 @@
 require "pathname"
 require "set"
 
-DEBUG = false
-
 INPUTS = [
   Pathname("inputs/test.txt"),
   Pathname("inputs/puzzle.txt"),
@@ -24,15 +22,17 @@ def twin_letters(input)
 end
 
 def letter_pairs_count(input)
-  last_index = input.size - 4
-  input
+  characters = input
     .each_char
     .each_cons(4)
     .reject { |(a, b, c, d)| (a == b && b == c || b == c && c == d ) && a != d }
-    .each_with_index
-    .flat_map { |(a, b, c, d), i| i == last_index ? [a+b, b+c, c+d] : [a+b] }
-    .tally
-    .values.max || 0
+
+  last_index = characters.size
+  pairs = characters
+    .flat_map
+    .with_index(1) { |(a, b, c, d), i| i == last_index ? [a+b, b+c, c+d] : [a+b] }
+
+  pairs.tally.values.max || 0
 end
 
 def surrounded_letter_count(input)
@@ -66,26 +66,12 @@ def count_nice(file)
 end
 
 def solve_part_1(file)
-  nice_lines = count_nice(file) do |l|
-    nice = is_nice?(l)
-    if DEBUG
-      puts(nice ? "\t#{l} is nice" : "\t#{l} is not nice")
-      puts "\t" + (" -" * 10)
-    end
-    nice
-  end
+  nice_lines = count_nice(file) { |l| is_nice?(l) }
   puts "\tThere are #{nice_lines} nice lines"
 end
 
 def solve_part_2(file)
-  nice_lines = count_nice(file) do |l|
-    nice = is_really_nice?(l)
-    if DEBUG
-      puts(nice ? "\t#{l} is really nice" : "\t#{l} is not really nice")
-      puts "\t" + (" -" * 15)
-    end
-    nice
-  end
+  nice_lines = count_nice(file) { |l| is_really_nice?(l) }
   puts "\tThere are #{nice_lines} really nice lines"
 end
 
