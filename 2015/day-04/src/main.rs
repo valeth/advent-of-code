@@ -8,8 +8,8 @@ macro_rules! infile {
 }
 
 const INPUTS: &[(&str, &str)] = &[
-    infile!("inputs/test.txt"),
-    infile!("inputs/puzzle.txt"),
+    infile!("../inputs/test.txt"),
+    infile!("../inputs/puzzle.txt"),
 ];
 
 fn extract_result(pool: &ThreadPool<Vec<usize>>) -> Option<usize> {
