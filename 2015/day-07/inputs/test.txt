@@ -1,0 +1,8 @@
+x OR y -> e
+123 -> x
+x LSHIFT 2 -> f
+x AND y -> d
+y RSHIFT 2 -> g
+NOT x -> h
+456 -> y
+NOT y -> i
