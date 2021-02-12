@@ -1,6 +1,7 @@
 mod graph;
 mod utils;
 mod part1;
+mod part2;
 
 type Graph = graph::Graph<Location, Distance>;
 type Node = graph::Node<Location, Distance>;
@@ -27,6 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         utils::write_dot(&directions, file_path)?;
 
         println!("\tPart 1: {:?}", part1::solve(&directions));
+        println!("\tPart 2: {:?}", part2::solve(&directions));
     }
 
     Ok(())
