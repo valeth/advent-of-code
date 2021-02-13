@@ -1,28 +1,29 @@
 # [Advent of Code 2015](https://adventofcode.com/2015)
 
-## Progress
-- [x] Day 01
-- [x] Day 02
-- [x] Day 03
-- [x] Day 04
-- [x] Day 05
-- [x] Day 06
-- [x] Day 07
-- [x] Day 08
-- [x] Day 09
-- [x] Day 10
-- [ ] Day 11
-- [ ] Day 12
-- [ ] Day 13
-- [ ] Day 14
-- [ ] Day 15
-- [ ] Day 16
-- [ ] Day 17
-- [ ] Day 18
-- [ ] Day 19
-- [ ] Day 20
-- [ ] Day 21
-- [ ] Day 22
-- [ ] Day 23
-- [ ] Day 24
-- [ ] Day 25
+| Solved | Day | Language
+|:------:|:---:|:---------
+| ✓      | 01  | Ruby
+| ✓      | 02  | Ruby
+| ✓      | 03  | Ruby
+| ✓      | 04  | Rust
+| ✓      | 05  | Ruby
+| ✓      | 06  | Ruby
+| ✓      | 07  | Rust
+| ✓      | 08  | Ruby
+| ✓      | 09  | Rust
+| ✓      | 10  | Ruby
+|        | 11  |
+|        | 12  |
+|        | 13  |
+|        | 14  |
+|        | 15  |
+|        | 16  |
+|        | 17  |
+|        | 18  |
+|        | 19  |
+|        | 20  |
+|        | 21  |
+|        | 22  |
+|        | 23  |
+|        | 24  |
+|        | 25  |
