@@ -3,6 +3,7 @@ use crate::{Distance, Graph, Node};
 
 type NodeSet = HashSet<Node>;
 
+// Only works with complete graphs (where each node leads to each other node)
 fn visit_all_shortest(start_node: &Node) -> Vec<(Node, Distance)> {
     let mut visited = NodeSet::new();
     let mut path = Vec::new();
@@ -45,7 +46,7 @@ fn visit_all_shortest(start_node: &Node) -> Vec<(Node, Distance)> {
 }
 
 /// Find shortest path that connects two points and visits all locations.
-pub fn solve(directions: &Graph) -> Option<Distance> {
+pub fn solve(directions: &Graph) -> Distance {
     use std::cmp::min;
 
     let mut shortest_distance = None;
@@ -64,5 +65,5 @@ pub fn solve(directions: &Graph) -> Option<Distance> {
         };
     }
 
-    shortest_distance
+    shortest_distance.unwrap_or_default()
 }

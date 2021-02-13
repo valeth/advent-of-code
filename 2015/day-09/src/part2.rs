@@ -7,7 +7,6 @@ struct Memo<'a> {
     max_dist: &'a mut Distance,
     prev_dist: Distance,
     visited: &'a mut NodeSet,
-    path: &'a mut Vec<(Node, Distance)>,
 }
 
 fn depth_first_search(node: &Node, memo: Memo<'_>) {
@@ -17,15 +16,12 @@ fn depth_first_search(node: &Node, memo: Memo<'_>) {
 
     for (out_node, out_weight) in &node.borrow().outgoing {
         if !memo.visited.contains(&out_node) {
-            memo.path.push((out_node.clone(), *out_weight));
-
             distance = memo.prev_dist + out_weight;
 
             depth_first_search(&out_node, Memo {
                 max_dist: &mut *memo.max_dist,
                 prev_dist: distance,
                 visited: &mut *memo.visited,
-                path: &mut *memo.path
             });
         }
 
@@ -37,37 +33,28 @@ fn depth_first_search(node: &Node, memo: Memo<'_>) {
     }
 }
 
-fn visit_all_longest(start_node: &Node) -> Vec<(Node, Distance)> {
+fn visit_all_longest(start_node: &Node) -> Distance {
     let mut visited = NodeSet::new();
-    let mut path = Vec::new();
+
+    let mut distance = 0;
 
     depth_first_search(&start_node, Memo {
-        max_dist: &mut 0,
+        max_dist: &mut distance,
         prev_dist: 0,
         visited: &mut visited,
-        path: &mut path
     });
 
-    path
+    distance
 }
 
-pub fn solve(directions: &Graph) -> Option<Distance> {
+pub fn solve(directions: &Graph) -> Distance {
     use std::cmp::max;
 
-    let mut longest_distance = None;
+    let mut longest_distance = 0;
 
     for node in &directions.nodes {
-        let path = visit_all_longest(node);
-
-        if path.is_empty() {
-            continue;
-        }
-
-        let distance = path.iter().map(|p| p.1).sum();
-        longest_distance = match longest_distance {
-            None => Some(distance),
-            Some(d) => Some(max(distance, d)),
-        };
+        let distance = visit_all_longest(node);
+        longest_distance = max(distance, longest_distance);
     }
 
     longest_distance

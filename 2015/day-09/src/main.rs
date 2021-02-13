@@ -9,14 +9,12 @@ type Node = graph::Node<Location, Distance>;
 type Location = String;
 type Distance = u64;
 
-const FILE_PATHS: &[&str] = &[
-    "inputs/test.txt",
-    "inputs/puzzle.txt",
-];
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    for file_path in FILE_PATHS {
-        println!("File: {}", file_path);
+    use std::env;
+
+    let file_paths = env::args().skip(1).collect::<Vec<_>>();
+
+    for file_path in &file_paths {
         let locations = utils::parse_file(file_path)?;
 
         let mut directions = Graph::default();
@@ -25,10 +23,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             directions.add_edge(location);
         }
 
-        utils::write_dot(&directions, file_path)?;
+        utils::write_dot(&directions, &file_path)?;
 
-        println!("\tPart 1: {:?}", part1::solve(&directions));
-        println!("\tPart 2: {:?}", part2::solve(&directions));
+        println!("{} / solution 1 = {:?}", file_path, part1::solve(&directions));
+        println!("{} / solution 2 = {:?}", file_path, part2::solve(&directions));
     }
 
     Ok(())
