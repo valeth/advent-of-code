@@ -19,7 +19,7 @@
 | ✓        | 15     | Permutations          | Ruby       |
 | ✓        | 16     | Searching             | Ruby       |
 |          | 17     | Combinations          |            |
-|          | 18     |                       |            |
+| ✓        | 18     | Game of Life          | Ruby       |
 |          | 19     |                       |            |
 |          | 20     |                       |            |
 |          | 21     |                       |            |
