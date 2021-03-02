@@ -6,6 +6,21 @@ require "set"
 
 Container = Struct.new(:id, :cap)
 
+# dumps result of previous solution to avoid recomputing
+def memo(file)
+  dump_path = "#{file.basename}.rbdump"
+
+  if File.exist?(dump_path)
+    File.open(dump_path, "rb") { |df| Marshal.load(df) }
+  else
+    File.open(dump_path, "wb") do |dumpfile|
+      result = yield
+      dumpfile.write(Marshal.dump(result))
+      result
+    end
+  end
+end
+
 # quite inefficient, probably needs a DP solution
 def combinations(amount, containers, stack = [], results = Set[])
   stack_sum = stack.sum { |x| x.cap }
@@ -34,10 +49,15 @@ def main(amount, file_paths)
 
     containers = file_path.each_line.with_index.map { |x, i| Container.new(i, x.to_i) }.freeze
 
-    result = combinations(amount, containers)
+    result = memo(file_path) { combinations(amount, containers) }
 
     solution1 = result.size
     puts "  Solution 1: #{solution1}"
+
+    solution2 = result.min_by { |x| x.size }.size
+      .then { |mincomb| result.select { |x| x.size == mincomb } }
+      .size
+    puts "  Solution 2: #{solution2}"
   end
 end
 
