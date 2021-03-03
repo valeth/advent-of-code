@@ -18,7 +18,7 @@
 | ✓        | 14     | Score calculation     | Ruby       |
 | ✓        | 15     | Permutations          | Ruby       |
 | ✓        | 16     | Searching             | Ruby       |
-|          | 17     | Combinations          |            |
+| ✓        | 17     | Combinations          | Ruby       |
 | ✓        | 18     | Game of Life          | Ruby       |
 |          | 19     |                       |            |
 |          | 20     |                       |            |
