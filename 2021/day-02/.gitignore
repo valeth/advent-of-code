@@ -1,4 +1,4 @@
-*
-!.gitignore
-!*.adb
-!*.ads
+part_one
+part_two
+*.ali
+*.o
