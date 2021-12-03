@@ -1,5 +1,7 @@
 # [Advent of Code 2021](https://adventofcode.com/2021)
 
+## Progress
+
 | Day | Part 1 | Part 2 | Language |
 | :-: | :----: | :----: | :------- |
 | 01  |   ✓    |   ✓    | Ruby     |
@@ -27,3 +29,7 @@
 | 23  |        |        |          |
 | 24  |        |        |          |
 | 25  |        |        |          |
+
+## Additional Challenges
+
+-   Attempt to solve each day in a different language.
