@@ -1,0 +1,64 @@
+import std::fs::file::(ReadOnlyFile as File)
+import std::stdio::stdout
+import std::io::(Error as IoError)
+
+def read_file(path: String) !! IoError -> Array!(Integer) {
+    let file = try File.new(path)
+    let mut content = try file.read_string
+    content = content.slice(0, content.length - 1)
+    content.split(",").map do (c) { c.to_integer }.to_array
+}
+
+def count_fish(initial: Array!(Integer), days: Integer) -> Integer {
+    let mut day = 0
+
+    let mut timers = Array.filled(9, 0)
+    initial.iter.each do (n) { timers[n] = timers[n] + 1 }
+
+    while({day < days}) {
+        let mut new_timers = Array.filled(9, 0)
+
+        timers.each_with_index do (timer, idx) {
+            new_timers[idx - 1] = new_timers[idx - 1] + timer
+
+            (idx == 0).if_true {
+                (timer != 0).if_true {
+                    new_timers[6] = new_timers[6] + timer
+                }
+            }
+        }
+
+        timers = new_timers
+
+        day += 1
+    }
+
+    timers.iter.reduce(0) do (acc, num) { acc + num }
+}
+
+def count_fish_naive(initial: Array!(Integer), days: Integer) -> Integer {
+    let mut fish = initial
+    let mut day = 0
+
+    while({day < days}) {
+        let mut new_fish = Array.new()
+
+        fish = fish
+            .iter
+            .map do (f) {
+                (f == 0).if(true: {
+                    new_fish.push(8)
+                    6
+                }, false: {
+                    f - 1
+                })
+            }
+            .to_array
+
+        fish.append(new_fish)
+
+        day += 1
+    }
+
+    fish.length
+}

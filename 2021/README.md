@@ -4,12 +4,12 @@
 
 | Day | Part 1 | Part 2 | Language |
 | :-: | :----: | :----: | :------- |
-| 01  |   ✓    |   ✓    | Ruby     |
-| 02  |   ✓    |   ✓    | Ada      |
-| 03  |   ✓    |   ✓    | Perl     |
-| 04  |   ✓    |   ✓    | Go       |
-| 05  |   ✓    |   ✓    | Nim      |
-| 06  |        |        |          |
+| 01  |   ✓    |   ✓    | [Ruby]   |
+| 02  |   ✓    |   ✓    | [Ada]    |
+| 03  |   ✓    |   ✓    | [Perl]   |
+| 04  |   ✓    |   ✓    | [Go]     |
+| 05  |   ✓    |   ✓    | [Nim]    |
+| 06  |   ✓    |   ✓    | [Inko]   |
 | 07  |        |        |          |
 | 08  |        |        |          |
 | 09  |        |        |          |
@@ -33,3 +33,12 @@
 ## Additional Challenges
 
 -   Attempt to solve each day in a different language.
+
+<!-- links -->
+
+[ruby]: https://www.ruby-lang.org
+[ada]: https://www.adacore.com/about-ada
+[perl]: https://www.perl.org
+[go]: https://go.dev
+[nim]: https://nim-lang.org
+[inko]: https://inko-lang.org

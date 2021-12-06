@@ -1,0 +1,15 @@
+import std::stdio::stdout
+import std::env
+import std::error::Error
+import common
+
+def main() !! Error {
+    let path = env.arguments[0]
+    let initial_fish = try common.read_file(path)
+
+    let fish_count = common.count_fish(initial_fish, 256)
+
+    stdout.print(fish_count)
+}
+
+try! main
