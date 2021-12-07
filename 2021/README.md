@@ -10,7 +10,7 @@
 | 04  |   ✓    |   ✓    | [Go]     |
 | 05  |   ✓    |   ✓    | [Nim]    |
 | 06  |   ✓    |   ✓    | [Inko]   |
-| 07  |        |        |          |
+| 07  |   ✓    |   ✓    | [Swift]  |
 | 08  |        |        |          |
 | 09  |        |        |          |
 | 10  |        |        |          |
@@ -42,3 +42,4 @@
 [go]: https://go.dev
 [nim]: https://nim-lang.org
 [inko]: https://inko-lang.org
+[swift]: https://www.swift.org
