@@ -11,7 +11,7 @@
 | 05  |   ✓    |   ✓    | [Nim]    |
 | 06  |   ✓    |   ✓    | [Inko]   |
 | 07  |   ✓    |   ✓    | [Swift]  |
-| 08  |        |        |          |
+| 08  |   ✓    |        | [C#]     |
 | 09  |        |        |          |
 | 10  |        |        |          |
 | 11  |        |        |          |
@@ -43,3 +43,4 @@
 [nim]: https://nim-lang.org
 [inko]: https://inko-lang.org
 [swift]: https://www.swift.org
+[c#]: https://docs.microsoft.com/en-us/dotnet/csharp/
