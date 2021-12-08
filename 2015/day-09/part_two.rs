@@ -1,7 +1,11 @@
-use std::collections::HashSet;
-use crate::{Distance, Graph, Node};
+mod common;
+pub mod graph;
+mod utils;
 
-type NodeSet = HashSet<Node>;
+use std::cmp::max;
+use std::env;
+
+use crate::common::{Distance, Node, NodeSet, Result};
 
 struct Memo<'a> {
     max_dist: &'a mut Distance,
@@ -18,11 +22,14 @@ fn depth_first_search(node: &Node, memo: Memo<'_>) {
         if !memo.visited.contains(&out_node) {
             distance = memo.prev_dist + out_weight;
 
-            depth_first_search(&out_node, Memo {
-                max_dist: &mut *memo.max_dist,
-                prev_dist: distance,
-                visited: &mut *memo.visited,
-            });
+            depth_first_search(
+                &out_node,
+                Memo {
+                    max_dist: &mut *memo.max_dist,
+                    prev_dist: distance,
+                    visited: &mut *memo.visited,
+                },
+            );
         }
 
         if *memo.max_dist < distance {
@@ -38,17 +45,22 @@ fn visit_all_longest(start_node: &Node) -> Distance {
 
     let mut distance = 0;
 
-    depth_first_search(&start_node, Memo {
-        max_dist: &mut distance,
-        prev_dist: 0,
-        visited: &mut visited,
-    });
+    depth_first_search(
+        &start_node,
+        Memo {
+            max_dist: &mut distance,
+            prev_dist: 0,
+            visited: &mut visited,
+        },
+    );
 
     distance
 }
 
-pub fn solve(directions: &Graph) -> Distance {
-    use std::cmp::max;
+fn main() -> Result<()> {
+    let path = env::args().nth(1).unwrap();
+
+    let directions = common::parse_file(path)?;
 
     let mut longest_distance = 0;
 
@@ -57,5 +69,7 @@ pub fn solve(directions: &Graph) -> Distance {
         longest_distance = max(distance, longest_distance);
     }
 
-    longest_distance
+    println!("{}", longest_distance);
+
+    Ok(())
 }

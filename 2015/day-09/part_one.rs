@@ -1,7 +1,11 @@
-use std::collections::HashSet;
-use crate::{Distance, Graph, Node};
+mod common;
+pub mod graph;
+mod utils;
 
-type NodeSet = HashSet<Node>;
+use std::cmp::min;
+use std::env;
+
+use crate::common::{Distance, Node, NodeSet, Result};
 
 // Only works with complete graphs (where each node leads to each other node)
 fn visit_all_shortest(start_node: &Node) -> Vec<(Node, Distance)> {
@@ -45,9 +49,9 @@ fn visit_all_shortest(start_node: &Node) -> Vec<(Node, Distance)> {
     path
 }
 
-/// Find shortest path that connects two points and visits all locations.
-pub fn solve(directions: &Graph) -> Distance {
-    use std::cmp::min;
+fn main() -> Result<()> {
+    let path = env::args().nth(1).unwrap();
+    let directions = common::parse_file(path)?;
 
     let mut shortest_distance = None;
 
@@ -58,12 +62,14 @@ pub fn solve(directions: &Graph) -> Distance {
             continue;
         }
 
-        let distance = path.iter().map(|p| p.1).sum();
+        let distance: Distance = path.iter().map(|p| p.1).sum();
         shortest_distance = match shortest_distance {
             None => Some(distance),
             Some(d) => Some(min(distance, d)),
         };
     }
 
-    shortest_distance.unwrap_or_default()
+    println!("{}", shortest_distance.unwrap_or_default());
+
+    Ok(())
 }

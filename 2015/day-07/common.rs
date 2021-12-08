@@ -40,8 +40,8 @@ pub struct Circuit {
 }
 
 impl Circuit {
-    pub fn add_instruction(&mut self, instruction: &str) {
-        let tokens = tokenize(instruction);
+    pub fn add_instruction(&mut self, input: &str) {
+        let tokens = tokenize(input);
         self.instructions.push_front(tokens);
     }
 
@@ -52,8 +52,8 @@ impl Circuit {
     }
 
     fn execute_one(&mut self, tokens: Vec<Token>) {
-        use self::Token::*;
         use self::Op::*;
+        use self::Token::*;
 
         self.instruction_len = tokens.len();
 
@@ -62,7 +62,7 @@ impl Circuit {
                 Ident(_) | Value(_) => {
                     self.stack.push(token.clone());
                     continue;
-                },
+                }
                 Op(Assign) => self.op_assign(),
                 Op(Not) => self.op_not(),
                 Op(And) => self.binop(|a, b| a & b),
@@ -75,26 +75,29 @@ impl Circuit {
                 Err(Error::VariableNotFound) => {
                     self.instructions.push_back(tokens);
                     return;
-                },
+                }
                 Err(e) => panic!("{:?}", e),
-                _ => ()
+                _ => (),
             }
         }
     }
 
+    #[allow(dead_code)]
     pub fn variable_override<N>(&mut self, name: N, value: Value)
-        where N: Into<Ident>
+    where
+        N: Into<Ident>,
     {
         self.overrides.insert(name.into(), value);
     }
 
     #[allow(dead_code)]
-    pub fn variables(&self) -> &HashMap<Ident,Value> {
+    pub fn variables(&self) -> &HashMap<Ident, Value> {
         &self.variables
     }
 
     pub fn variable<N>(&self, name: N) -> Option<&Value>
-        where N: AsRef<str>
+    where
+        N: AsRef<str>,
     {
         self.variables.get(name.as_ref())
     }
@@ -107,16 +110,26 @@ impl Circuit {
         let rhs = self.stack.pop().unwrap();
 
         if let Ident(id) = lhs {
-            let replace = if self.instruction_len == 3 { self.overrides.get(&id) } else { None };
+            let replace = if self.instruction_len == 3 {
+                self.overrides.get(&id)
+            } else {
+                None
+            };
             match (rhs, replace) {
-                (Value(_), Some(val)) => { self.variables.insert(id, *val); },
-                (Value(val), None) => { self.variables.insert(id, val); },
+                (Value(_), Some(val)) => {
+                    self.variables.insert(id, *val);
+                }
+                (Value(val), None) => {
+                    self.variables.insert(id, val);
+                }
                 (Ident(id2), _) => {
-                    let tmp = *self.variables.get(&id2)
+                    let tmp = *self
+                        .variables
+                        .get(&id2)
                         .ok_or_else(|| Error::VariableNotFound)?;
                     self.variables.insert(id, tmp);
-                },
-                _ => return Err(Error::InvalidStack)
+                }
+                _ => return Err(Error::InvalidStack),
             }
         }
 
@@ -132,20 +145,23 @@ impl Circuit {
         match token {
             Value(val) => {
                 self.stack.push(Value(!val));
-            },
+            }
             Ident(id) => {
-                let val = self.variables.get(&id)
+                let val = self
+                    .variables
+                    .get(&id)
                     .ok_or_else(|| Error::VariableNotFound)?;
                 self.stack.push(Value(!val));
-            },
-            _ => return Err(Error::InvalidStack)
+            }
+            _ => return Err(Error::InvalidStack),
         }
 
         Ok(())
     }
 
     fn binop<F>(&mut self, fun: F) -> Result<()>
-        where F: Fn(Value, Value) -> Value
+    where
+        F: Fn(Value, Value) -> Value,
     {
         use self::Token::*;
 
@@ -155,23 +171,31 @@ impl Circuit {
 
         match (lhs, rhs) {
             (Ident(id1), Value(val)) => {
-                let a = *self.variables.get(&id1)
+                let a = *self
+                    .variables
+                    .get(&id1)
                     .ok_or_else(|| Error::VariableNotFound)?;
                 self.stack.push(Value(fun(a, val)));
-            },
+            }
             (Ident(id1), Ident(id2)) => {
-                let a = *self.variables.get(&id1)
+                let a = *self
+                    .variables
+                    .get(&id1)
                     .ok_or_else(|| Error::VariableNotFound)?;
-                let b = *self.variables.get(&id2)
+                let b = *self
+                    .variables
+                    .get(&id2)
                     .ok_or_else(|| Error::VariableNotFound)?;
                 self.stack.push(Value(fun(a, b)));
-            },
+            }
             (Value(val), Ident(id2)) => {
-                let b = *self.variables.get(&id2)
+                let b = *self
+                    .variables
+                    .get(&id2)
                     .ok_or_else(|| Error::VariableNotFound)?;
                 self.stack.push(Value(fun(val, b)));
-            },
-            _ => return Err(Error::InvalidStack)
+            }
+            _ => return Err(Error::InvalidStack),
         }
 
         Ok(())
@@ -193,13 +217,13 @@ fn tokenize(input: &str) -> Vec<Token> {
             otherwise => match otherwise.parse::<Value>() {
                 Ok(val) => Token::Value(val),
                 Err(_) => Token::Ident(word.to_string()),
-            }
+            },
         };
 
         match token {
             Token::Op(_) => {
                 operator = Some(token);
-            },
+            }
             _ => {
                 tokens.push(token);
                 if let Some(op) = operator.take() {
