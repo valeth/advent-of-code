@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    gcc -std=c17 -Werror -Wextra -o part_{{PART}} common.c part_{{PART}}.c
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm part_one part_two
