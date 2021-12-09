@@ -1,0 +1,2 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    go run part_{{PART}}.go {{INPUT_FILE}}

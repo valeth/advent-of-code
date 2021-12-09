@@ -1,6 +1,6 @@
-@part_one INPUT_FILE:
-    mcs -out:part_one.exe common.cs part_one.cs
-    mono part_one.exe {{INPUT_FILE}}
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    mcs -out:part_{{PART}}.exe common.cs part_{{PART}}.cs
+    mono part_{{PART}}.exe {{INPUT_FILE}}
 
 clean:
     rm *.exe

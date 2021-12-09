@@ -1,0 +1,2 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    ruby part_{{PART}}.rb {{INPUT_FILE}}

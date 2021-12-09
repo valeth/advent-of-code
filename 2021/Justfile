@@ -1,0 +1,19 @@
+@_run_day DAY PART INPUT:
+    just \
+        --working-directory "./day-{{DAY}}" \
+        --justfile "./day-{{DAY}}/Justfile" \
+        part {{PART}} {{INPUT}}
+
+day DAYS="all" PARTS="one,two" INPUT_FILE="":
+    #!/usr/bin/env ruby
+    days = "{{DAYS}}" == "all" ? Dir["day-*"] : "{{DAYS}}".split(",")
+    input_file = "{{INPUT_FILE}}".then do |f|
+        (f.include?("/") || f.empty?) ? f : "inputs/#{f}.txt"
+    end
+    days.each do |day|
+        day = day.delete_prefix("day-")
+        "{{PARTS}}".split(",").each do |part|
+            part_num = part == "one" ? 1 : 2
+            puts "Day #{day}.#{part_num}: " + `just _run_day #{day} #{part} '#{input_file}'`
+        end
+    end

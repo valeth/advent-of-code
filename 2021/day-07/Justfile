@@ -1,0 +1,10 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    just _swift part_{{PART}}.swift {{INPUT_FILE}}
+
+_swift FILE INPUT_FILE:
+    #!/usr/bin/env sh
+    if test -p swift; then
+        swift {{FILE}} {{INPUT_FILE}}
+    else
+        echo "swift not found in PATH"
+    fi

@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    gnatmake -q -gnat2020 part_{{PART}}
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm *.ali *.o part_one part_two

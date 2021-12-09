@@ -1,0 +1,10 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    just _inko part_{{PART}}.inko {{INPUT_FILE}}
+
+_inko FILE INPUT_FILE:
+    #!/usr/bin/env sh
+    if type -p inko; then
+        inko run --include . {{FILE}} {{INPUT_FILE}}
+    else
+        echo "inko not found in PATH"
+    fi

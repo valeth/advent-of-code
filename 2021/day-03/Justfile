@@ -1,0 +1,2 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    perl part_{{PART}}.pl {{INPUT_FILE}}

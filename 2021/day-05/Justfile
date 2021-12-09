@@ -1,0 +1,2 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    nim r --hints:off part_{{PART}}.nim {{INPUT_FILE}}
