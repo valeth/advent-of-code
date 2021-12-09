@@ -7,7 +7,7 @@
 int BASIN_IDX = 0;
 int BASINS[BASIN_COUNT] = { 0 };
 
-int scout_basin(int x, int y, int marked[100][100]) {
+int scout_basin(int x, int y, int marked[MAP_MAX_Y][MAP_MAX_X]) {
     marked[y][x] = 1;
     int count = 1;
 
@@ -31,7 +31,7 @@ int scout_basin(int x, int y, int marked[100][100]) {
 }
 
 int calculate_basin_size(int x, int y, int cur) {
-    int marked[100][100] = { 0 };
+    int marked[MAP_MAX_Y][MAP_MAX_X] = { 0 };
     int basin_size = scout_basin(x, y, marked);
     BASINS[BASIN_IDX] = basin_size;
     BASIN_IDX++;

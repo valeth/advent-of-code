@@ -6,7 +6,7 @@
 
 int MAP_WIDTH = 0;
 int MAP_HEIGHT = 0;
-int MAP[100][100];
+int MAP[MAP_MAX_Y][MAP_MAX_X];
 
 void read_file(char* path) {
     FILE* fp = fopen(path, "r");
@@ -37,6 +37,8 @@ void read_file(char* path) {
     }
 
     MAP_HEIGHT = y;
+
+    fclose(fp);
 }
 
 void print_map(int map[100][100]) {

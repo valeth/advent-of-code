@@ -1,5 +1,5 @@
 @part PART INPUT_FILE="inputs/puzzle.txt":
-    gcc -std=c17 -Werror -Wextra -o part_{{PART}} common.c part_{{PART}}.c
+    gcc -std=c17 -Werror -Wextra -pedantic -o part_{{PART}} common.c part_{{PART}}.c
     ./part_{{PART}} {{INPUT_FILE}}
 
 clean:

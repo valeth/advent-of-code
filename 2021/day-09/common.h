@@ -1,8 +1,10 @@
 #pragma once
 
+#define MAP_MAX_Y 100
+#define MAP_MAX_X 100
 extern int MAP_WIDTH;
 extern int MAP_HEIGHT;
-extern int MAP[100][100];
+extern int MAP[MAP_MAX_Y][MAP_MAX_X];
 
 typedef int (*result_fn)(int, int, int);
 
