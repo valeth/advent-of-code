@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    ocamlopt -o part_{{PART}} common.ml part_{{PART}}.ml
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm -f *.cmx *.cmi *.o part_one part_two

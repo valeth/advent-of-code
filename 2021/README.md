@@ -13,7 +13,7 @@
 | 07  |   ✓    |   ✓    | [Swift]  |
 | 08  |   ✓    |        | [C#]     |
 | 09  |   ✓    |   ✓    | [C]      |
-| 10  |        |        |          |
+| 10  |   ✓    |   ✓    | [OCaml]  |
 | 11  |        |        |          |
 | 12  |        |        |          |
 | 13  |        |        |          |
@@ -45,3 +45,4 @@
 [swift]: https://www.swift.org
 [c#]: https://docs.microsoft.com/en-us/dotnet/csharp/
 [c]: http://www.open-std.org/jtc1/sc22/wg14
+[ocaml]: https://ocaml.org
