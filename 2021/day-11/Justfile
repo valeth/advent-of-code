@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    crystal build --error-trace part_{{PART}}.cr
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm -f part_one part_two
