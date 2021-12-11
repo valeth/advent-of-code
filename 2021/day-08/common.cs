@@ -43,4 +43,50 @@ namespace Common {
             }
         }
     }
+
+    public static class Permutation {
+        public static IEnumerable<T[]> Permutations<T>(this IEnumerable<T> input) {
+            return Permute(input, Enumerable.Empty<T>());
+        }
+
+        private static IEnumerable<T[]> Permute<T>(IEnumerable<T> memo, IEnumerable<T> pfx) {
+            if (memo.Any()) {
+                return
+                    from t in memo.Select((a, b) => (a, b))
+                    let next_memo = memo.Take(t.Item2).Concat(memo.Skip(t.Item2 + 1)).ToArray()
+                    let next_pfx = pfx.Append(t.Item1)
+                    from perms in Permute(next_memo, next_pfx)
+                    select perms;
+
+            } else {
+                return new[] { pfx.ToArray() };
+            }
+        }
+    }
+
+    public abstract class Option<T> {
+        private Option() {}
+
+        public abstract bool IsSome();
+
+        public bool GetValue(out T val) {
+            if (this is Some s) {
+                val = s.Value;
+                return true;
+            }
+
+            val = default(T);
+            return false;
+        }
+
+        public sealed class Some : Option<T> {
+            public Some(T val) => Value = val;
+            public T Value { get; }
+            public override bool IsSome() => true;
+        }
+
+        public sealed class None : Option<T> {
+            public override bool IsSome() => false;
+        }
+    }
 }
