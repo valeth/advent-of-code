@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    rustc part_{{PART}}.rs
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm -f part_one part_two
