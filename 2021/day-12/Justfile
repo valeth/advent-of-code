@@ -1,0 +1,5 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    python3 part_{{PART}}.py {{INPUT_FILE}}
+
+clean:
+    rm -rf __pycache__

@@ -15,7 +15,7 @@
 | 09  |   ✓    |   ✓    | [C]       |
 | 10  |   ✓    |   ✓    | [OCaml]   |
 | 11  |   ✓    |   ✓    | [Crystal] |
-| 12  |        |        |           |
+| 12  |   ✓    |   ✓    | [Python]  |
 | 13  |        |        |           |
 | 14  |        |        |           |
 | 15  |        |        |           |
@@ -47,3 +47,4 @@
 [c]: http://www.open-std.org/jtc1/sc22/wg14
 [ocaml]: https://ocaml.org
 [crystal]: https://crystal-lang.org
+[python]: https://www.python.org
