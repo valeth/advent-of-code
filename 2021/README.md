@@ -16,7 +16,7 @@
 | 10  |   ✓    |   ✓    | [OCaml]   |
 | 11  |   ✓    |   ✓    | [Crystal] |
 | 12  |   ✓    |   ✓    | [Python]  |
-| 13  |        |        |           |
+| 13  |   ✓    |   ✓    | [C++]     |
 | 14  |        |        |           |
 | 15  |        |        |           |
 | 16  |        |        |           |
@@ -48,3 +48,4 @@
 [ocaml]: https://ocaml.org
 [crystal]: https://crystal-lang.org
 [python]: https://www.python.org
+[c++]: https://isocpp.org

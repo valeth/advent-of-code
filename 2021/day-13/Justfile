@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    clang -std=c++20 -lstdc++ -Wall -Wextra -Werror -pedantic -o part_{{PART}} common.cpp part_{{PART}}.cpp
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm -f part_one part_two
