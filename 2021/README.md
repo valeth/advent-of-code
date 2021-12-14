@@ -17,7 +17,7 @@
 | 11  |   ✓    |   ✓    | [Crystal] |
 | 12  |   ✓    |   ✓    | [Python]  |
 | 13  |   ✓    |   ✓    | [C++]     |
-| 14  |        |        |           |
+| 14  |   ✓    |   ✓    | [Erlang]  |
 | 15  |        |        |           |
 | 16  |        |        |           |
 | 17  |        |        |           |
@@ -49,3 +49,4 @@
 [crystal]: https://crystal-lang.org
 [python]: https://www.python.org
 [c++]: https://isocpp.org
+[erlang]: https://www.erlang.org

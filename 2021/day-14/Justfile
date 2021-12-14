@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    erl -compile common.erl
+    escript part_{{PART}}.erl {{INPUT_FILE}}
+
+clean:
+    rm -f *.beam *.dump
