@@ -4,6 +4,8 @@ import std.algorithm.iteration : filter, map;
 import std.algorithm.searching : minElement, canFind;
 import std.array : split;
 import std.container.array : Array;
+import std.container.rbtree : redBlackTree;
+import std.container.binaryheap : BinaryHeap;
 import std.conv : to;
 import std.stdio;
 import std.string : stripRight;
@@ -14,10 +16,62 @@ private alias Buffer = Array!(Array!(uint));
 struct CaveMap
 {
     private Buffer positions;
+    private const ulong tile_width;
+    private const ulong tile_height;
 
     this(string path)
     {
         positions = parseFile(path);
+    }
+
+    this(string path, uint tiles)
+    {
+        auto buffer = parseFile(path);
+        tile_height = buffer.length;
+        tile_width = buffer[0].length;
+
+        tileRight(buffer, tiles);
+        tileDown(buffer, tiles);
+
+        positions = buffer;
+    }
+
+    private void tileRight(Buffer buffer, uint tiles)
+    {
+        foreach (tile_x; 1 .. tiles)
+        {
+            foreach (y; 0 .. tile_height)
+            {
+                foreach (x; 0 .. tile_width)
+                {
+                    auto next_val = (buffer[y][x] + tile_x - 1) % 9;
+                    next_val = next_val == 0 ? 1 : next_val + 1;
+                    buffer[y].insertBack(next_val);
+                }
+            }
+        }
+    }
+
+    private void tileDown(Buffer buffer, uint tiles)
+    {
+        foreach (tile_y; 1 .. tiles)
+        {
+            const tile_y_begin = tile_y * tile_height;
+            foreach (y; 0 .. tile_height)
+            {
+                buffer.insertBack(Array!uint());
+                foreach (tile_x; 0 .. tiles)
+                {
+                    const tile_x_begin = tile_x * tile_width;
+                    foreach (x; 0 .. tile_width)
+                    {
+                        auto next_val = (buffer[y][tile_x_begin + x] + tile_y - 1) % 9;
+                        next_val = next_val == 0 ? 1 : next_val + 1;
+                        buffer[tile_y_begin + y].insertBack(next_val);
+                    }
+                }
+            }
+        }
     }
 
     private Array!(Array!uint) parseFile(string path)
@@ -40,6 +94,16 @@ struct CaveMap
 
         return buffer;
 
+    }
+
+    void toString(scope void delegate(const(char)[]) sink) const
+    {
+        foreach (y; 0 .. positions.length)
+        {
+            foreach (x; 0 .. positions[y].length)
+                sink(to!string(positions[y][x]));
+            sink("\n");
+        }
     }
 }
 
@@ -93,8 +157,43 @@ struct Cave
 
     uint lowestRisk()
     {
-        auto safest_path = dijkstraSlow();
+        auto safest_path = dijkstraFaster();
         return safest_path[1][end_node];
+    }
+
+    private Tuple!(NodeId[NodeId], uint[NodeId]) dijkstraFaster()
+    {
+        uint[NodeId] distance;
+        NodeId[NodeId] previous;
+
+        foreach (node_id; nodes.byKey())
+            distance[node_id] = uint.max;
+
+        distance[start_node] = 0;
+
+        auto queue = redBlackTree(tuple(distance[start_node], start_node));
+
+        foreach (_, node; queue)
+        {
+            if (node == end_node)
+                break;
+
+            foreach (neighbor; nodes[node])
+            {
+                auto total_distance = distance[node] + neighbor.weight;
+
+                if (total_distance < distance[neighbor.id])
+                {
+                    queue.removeKey(tuple(distance[neighbor.id], neighbor.id));
+                    distance[neighbor.id] = total_distance;
+                    previous[neighbor.id] = node;
+                    queue.insert(tuple(distance[neighbor.id], neighbor.id));
+                }
+
+            }
+        }
+
+        return tuple(previous, distance);
     }
 
     private Tuple!(NodeId[NodeId], uint[NodeId]) dijkstraSlow()
