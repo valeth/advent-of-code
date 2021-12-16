@@ -18,7 +18,7 @@
 | 12  |   ✓    |   ✓    | [Python]  |
 | 13  |   ✓    |   ✓    | [C++]     |
 | 14  |   ✓    |   ✓    | [Erlang]  |
-| 15  |        |        |           |
+| 15  |   ✓    |        | [D]       |
 | 16  |        |        |           |
 | 17  |        |        |           |
 | 18  |        |        |           |
@@ -50,3 +50,4 @@
 [python]: https://www.python.org
 [c++]: https://isocpp.org
 [erlang]: https://www.erlang.org
+[d]: https://dlang.org

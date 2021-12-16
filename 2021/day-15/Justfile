@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    dmd -of=part_{{PART}} part_{{PART}}.d common.d
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm -f *.o part_one part_two
