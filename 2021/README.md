@@ -19,7 +19,7 @@
 | 13  |   ✓    |   ✓    | [C++]     |
 | 14  |   ✓    |   ✓    | [Erlang]  |
 | 15  |   ✓    |   ✓    | [D]       |
-| 16  |        |        |           |
+| 16  |   ✓    |   ✓    | [Haskell] |
 | 17  |        |        |           |
 | 18  |        |        |           |
 | 19  |        |        |           |
@@ -51,3 +51,4 @@
 [c++]: https://isocpp.org
 [erlang]: https://www.erlang.org
 [d]: https://dlang.org
+[haskell]: https://www.haskell.org

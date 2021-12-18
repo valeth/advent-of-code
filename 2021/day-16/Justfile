@@ -1,0 +1,6 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    ghc part_{{PART}}.hs common.hs
+    ./part_{{PART}} {{INPUT_FILE}}
+
+clean:
+    rm -f *.hi *.o part_one part_two
