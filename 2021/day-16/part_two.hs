@@ -1,11 +1,12 @@
-import Common (evalPackets, parseFile, parsePackets)
+module Main where
+
+import Common (evalPacket, parseFile, parseRootPacket)
 import System.Environment (getArgs)
 
-main =
-  do
-    args <- getArgs
-    intList <- parseFile $ head args
+main = do
+  args <- getArgs
+  intList <- parseFile $ head args
 
-    let packets = parsePackets intList []
-    let results = maybe 0 evalPackets packets
-    print results
+  let rootPacket = parseRootPacket intList
+  let results = maybe 0 evalPacket rootPacket
+  print results

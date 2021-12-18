@@ -3,13 +3,12 @@
 
 module Common
   ( parseFile,
-    parsePackets,
+    parseRootPacket,
     sumPacketVersions,
-    evalPackets,
+    evalPacket,
   )
 where
 
-import Control.Monad (mfilter)
 import Data.Char (digitToInt)
 import Data.Maybe (mapMaybe)
 import Numeric (readHex)
@@ -17,6 +16,20 @@ import System.IO (readFile)
 import Text.Printf (printf)
 
 type Bit = Int
+
+data Op = Sum | Product | Min | Max | Gt | Lt | Eq
+  deriving (Show)
+
+data PacketData = Literal Int | Operator Op [Packet]
+  deriving (Show)
+
+data Packet = Packet
+  { version :: Int,
+    content :: PacketData
+  }
+  deriving (Show)
+
+-- Parsing
 
 parseFile :: String -> IO [Bit]
 parseFile path = do
@@ -41,55 +54,10 @@ bitsToInt bs =
     bitsToInt' (0 : bs) p = bitsToInt' bs (p - 1)
     bitsToInt' (1 : bs) p = (2 ^ p) + bitsToInt' bs (p - 1)
 
-data Op = Sum | Product | Min | Max | Gt | Lt | Eq
-  deriving (Show)
-
-data PacketData = Literal Int | Operator Op [Packet]
-  deriving (Show)
-
-data Packet = Packet
-  { version :: Int,
-    content :: PacketData
-  }
-  deriving (Show)
-
-sumPacketVersions :: [Packet] -> Int -> Int
-sumPacketVersions [] memo = memo
-sumPacketVersions (Packet {version, content} : rem) memo =
-  case content of
-    Literal _ -> sumPacketVersions rem (memo + version)
-    Operator _ packets -> sumPacketVersions packets 0 + sumPacketVersions rem (memo + version)
-
-parsePackets :: [Bit] -> [Packet] -> Maybe [Packet]
-parsePackets [] packets = Just packets
-parsePackets bits packets = do
-  (pkgConsumed, packet) <- parsePacket bits
-  let nextBits = removePadding (drop pkgConsumed bits)
-  parsePackets nextBits (packets ++ [packet])
-  where
-    removePadding [] = []
-    removePadding bits@(1 : _ : _ : xs) = bits
-    removePadding bits@(0 : 1 : _ : xs) = bits
-    removePadding bits@(0 : 0 : 1 : xs) = bits
-    removePadding (0 : bs) = removePadding bs
-
-evalPackets :: [Packet] -> Int
-evalPackets packets = sum (map evalPacket packets)
-
-evalPacket :: Packet -> Int
-evalPacket Packet {content} =
-  case content of
-    Literal val -> val
-    Operator Sum packets -> sum (map evalPacket packets)
-    Operator Product packets -> product (map evalPacket packets)
-    Operator Min packets -> minimum (map evalPacket packets)
-    Operator Max packets -> maximum (map evalPacket packets)
-    Operator Gt [x, y] ->
-      let (px, py) = (evalPacket x, evalPacket y) in if px > py then 1 else 0
-    Operator Lt [x, y] ->
-      let (px, py) = (evalPacket x, evalPacket y) in if px < py then 1 else 0
-    Operator Eq [x, y] ->
-      let (px, py) = (evalPacket x, evalPacket y) in if px == py then 1 else 0
+parseRootPacket :: [Bit] -> Maybe Packet
+parseRootPacket bits = do
+  (_, packet) <- parsePacket bits
+  Just packet
 
 parsePacket :: [Bit] -> Maybe (Int, Packet)
 parsePacket [] = Nothing
@@ -142,9 +110,30 @@ parseOperator bits op (consumed, memo) =
 parseLiteral :: [Bit] -> (Int, [Bit]) -> Maybe (Int, PacketData)
 parseLiteral bits (consumed, memo) =
   case bits of
-    (1 : bs) ->
-      parseLiteral (drop 4 bs) (consumed + 5, memo ++ take 4 bs)
-    (0 : bs) ->
-      Just (consumed + 5, Literal (bitsToInt (memo ++ take 4 bs)))
-    _ ->
-      Nothing
+    (1 : bs) -> parseLiteral (drop 4 bs) (consumed + 5, memo ++ take 4 bs)
+    (0 : bs) -> Just (consumed + 5, Literal (bitsToInt (memo ++ take 4 bs)))
+    _ -> Nothing
+
+-- Results
+
+sumPacketVersions :: Packet -> Int -> Int
+sumPacketVersions Packet {version, content = Literal _} memo = memo + version
+sumPacketVersions Packet {version, content = Operator _ packets} memo =
+  version + sum (map (`sumPacketVersions` memo) packets)
+
+evalPacket :: Packet -> Int
+evalPacket Packet {content} =
+  case content of
+    Literal val -> val
+    Operator Sum packets -> sum (map evalPacket packets)
+    Operator Product packets -> product (map evalPacket packets)
+    Operator Min packets -> minimum (map evalPacket packets)
+    Operator Max packets -> maximum (map evalPacket packets)
+    Operator Gt [x, y] -> evalBinOp (>) x y
+    Operator Lt [x, y] -> evalBinOp (<) x y
+    Operator Eq [x, y] -> evalBinOp (==) x y
+  where
+    evalBinOp f x y =
+      let px = evalPacket x
+          py = evalPacket y
+       in if px `f` py then 1 else 0
