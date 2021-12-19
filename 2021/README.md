@@ -20,7 +20,7 @@
 | 14  |   ✓    |   ✓    | [Erlang]  |
 | 15  |   ✓    |   ✓    | [D]       |
 | 16  |   ✓    |   ✓    | [Haskell] |
-| 17  |        |        |           |
+| 17  |   ✓    |   ✓    | [Dart]    |
 | 18  |        |        |           |
 | 19  |        |        |           |
 | 20  |        |        |           |
@@ -52,3 +52,5 @@
 [erlang]: https://www.erlang.org
 [d]: https://dlang.org
 [haskell]: https://www.haskell.org
+[dart]: https://dart.dev
+[elixir]: https://elixir-lang.org

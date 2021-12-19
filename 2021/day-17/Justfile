@@ -1,0 +1,2 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    dart part_{{PART}}.dart {{INPUT_FILE}}
