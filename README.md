@@ -9,4 +9,4 @@
 -   [2019](2019/README.md) (0% completed)
 -   [2020](2020/README.md) (20% completed)
 -   [2021](2021/README.md) (68% completed)
--   [2022](2022/README.md) (16% completed)
+-   [2022](2022/README.md) (20% completed)
