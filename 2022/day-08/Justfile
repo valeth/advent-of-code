@@ -1,0 +1,5 @@
+@part PART INPUT_FILE="inputs/puzzle.txt":
+    cargo --quiet run --bin part_{{PART}} -- {{INPUT_FILE}}
+
+clean:
+    cargo clean
