@@ -14,7 +14,7 @@ fn main() -> io::Result<()> {
 
 fn solve(path: &str) -> io::Result<usize> {
     let instructions = parse_input(path)?;
-    let mut rope = Rope::new(2);
+    let mut rope = Rope::new(10);
     let mut tail_visited = Visited::new();
 
     tail_visited.insert(rope.tail().unwrap().clone());
@@ -33,12 +33,15 @@ mod test {
     #[test]
     fn sample() {
         let result = solve("inputs/test.txt").unwrap();
-        assert_eq!(13, result);
+        assert_eq!(1, result);
+
+        let result = solve("inputs/test2.txt").unwrap();
+        assert_eq!(36, result);
     }
 
     #[test]
     fn puzzle() {
         let result = solve("inputs/puzzle.txt").unwrap();
-        assert_eq!(6026, result);
+        assert_eq!(2273, result);
     }
 }
