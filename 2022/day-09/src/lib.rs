@@ -16,31 +16,24 @@ impl Rope {
         Self(vec![Knot::default(); len])
     }
 
-    pub fn move_head(&mut self, change: (isize, isize)) {
+    pub fn move_head(&mut self, change: (i32, i32)) {
         let mut knots = self.0.iter_mut();
 
         let mut next_a = knots.next();
-
-        next_a.as_mut().map(|head_knot| {
-            head_knot.0 += change.0;
-            head_knot.1 += change.1;
-        });
-
-        let mut next_b = knots.next();
+        let head_knot = next_a.as_mut().expect("no head knot");
+        head_knot.0 += change.0;
+        head_knot.1 += change.1;
 
         loop {
-            if next_a.is_some() && next_b.is_some() {
-                next_a.as_mut().map(|knot_a| {
-                    next_b.as_mut().map(|knot_b| {
-                        knot_b.follow(&knot_a);
-                    });
-                });
+            let mut next_b = knots.next();
 
-                next_a = next_b;
-                next_b = knots.next();
-            } else {
+            let (Some(knot_a), Some(knot_b)) = (next_a.as_mut(), next_b.as_mut()) else {
                 break;
-            }
+            };
+
+            knot_b.follow(&knot_a);
+
+            next_a = next_b;
         }
     }
 
@@ -50,56 +43,48 @@ impl Rope {
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
-pub struct Knot(isize, isize);
+pub struct Knot(i32, i32);
 
 impl Knot {
     pub fn follow(&mut self, other: &Self) {
         let dx = other.0 - self.0;
-        let dxa = dx.abs();
         let dy = other.1 - self.1;
-        let dya = dy.abs();
         let same_row = self.0 == other.0;
         let same_col = self.1 == other.1;
 
-        let x = if dx.is_negative() { -1 } else { 1 };
-        let y = if dy.is_negative() { -1 } else { 1 };
-
-        if (!same_row && !same_col) && (dxa > 1 || dya > 1) {
-            self.0 += x;
-            self.1 += y;
-        } else if dxa > 1 {
-            self.0 += x;
-        } else if dya > 1 {
-            self.1 += y;
+        if (!same_row && !same_col) && (dx.abs() > 1 || dy.abs() > 1) {
+            self.0 += dx.signum();
+            self.1 += dy.signum();
+        } else if dx.abs() > 1 {
+            self.0 += dx.signum();
+        } else if dy.abs() > 1 {
+            self.1 += dy.signum();
         }
     }
 }
 
 #[derive(Debug)]
-pub enum Instruction {
-    Up(isize),
-    Right(isize),
-    Left(isize),
-    Down(isize),
-}
+pub struct Direction(i32, i32, i32);
 
-impl FromStr for Instruction {
+impl FromStr for Direction {
     type Err = String;
 
     fn from_str(val: &str) -> Result<Self, Self::Err> {
         let parts = val.split_whitespace().collect::<Vec<&str>>();
+
         let [direction, distance, ..] = parts[..] else {
             return Err("Invalid instruction".to_string());
         };
+
         let distance = distance
             .parse()
             .map_err(|_| "Invalid distance value".to_string())?;
 
         let result = match direction {
-            "U" => Self::Up(distance),
-            "R" => Self::Right(distance),
-            "L" => Self::Left(distance),
-            "D" => Self::Down(distance),
+            "U" => Self(1, 0, distance),
+            "R" => Self(0, 1, distance),
+            "L" => Self(0, -1, distance),
+            "D" => Self(-1, 0, distance),
             _ => return Err("Invalid direction value".to_string()),
         };
 
@@ -107,30 +92,17 @@ impl FromStr for Instruction {
     }
 }
 
-impl Instruction {
+impl Direction {
     pub fn apply_to_rope(&self, rope: &mut Rope, tail_visited: &mut Visited) {
-        let (change, amount) = match *self {
-            Instruction::Up(dist) => ((1, 0), dist),
-            Instruction::Right(dist) => ((0, 1), dist),
-            Instruction::Left(dist) => ((0, -1), dist),
-            Instruction::Down(dist) => ((-1, 0), dist),
-        };
-
-        for _ in 0..amount {
-            let old_tail = rope.tail().unwrap().clone();
-
-            rope.move_head(change);
-
-            let new_tail = rope.tail().unwrap();
-
-            if old_tail != *new_tail {
-                tail_visited.insert(new_tail.clone());
-            }
+        for _ in 0..self.2 {
+            rope.move_head((self.0, self.1));
+            let tail = rope.tail().unwrap();
+            tail_visited.insert(tail.clone());
         }
     }
 }
 
-pub fn parse_input<P>(path: P) -> io::Result<Vec<Instruction>>
+pub fn parse_input<P>(path: P) -> io::Result<Vec<Direction>>
 where
     P: AsRef<Path>,
 {

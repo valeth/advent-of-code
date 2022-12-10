@@ -13,14 +13,14 @@ fn main() -> io::Result<()> {
 }
 
 fn solve(path: &str) -> io::Result<usize> {
-    let instructions = parse_input(path)?;
+    let directions = parse_input(path)?;
     let mut rope = Rope::new(2);
     let mut tail_visited = Visited::new();
 
     tail_visited.insert(rope.tail().unwrap().clone());
 
-    for instruction in instructions {
-        instruction.apply_to_rope(&mut rope, &mut tail_visited);
+    for direction in directions {
+        direction.apply_to_rope(&mut rope, &mut tail_visited);
     }
 
     Ok(tail_visited.len())
