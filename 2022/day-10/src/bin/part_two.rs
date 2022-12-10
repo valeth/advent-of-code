@@ -22,8 +22,8 @@ fn solve(path: &str) -> io::Result<String> {
     let mut crt = Vec::<[char; 40]>::new();
     let mut crt_row = [PIXEL_UNLIT; 40];
 
-    let mut cycles_total = 0;
-    let mut reg_x = 1_i64;
+    let mut cycles_total: i64 = 0;
+    let mut reg_x: i64 = 1;
 
     for instruction in instructions {
         let (cycles, add_x) = match instruction {
@@ -34,7 +34,7 @@ fn solve(path: &str) -> io::Result<String> {
         for _ in 0..cycles {
             let cur_row_pos = cycles_total % DRAW_CYCLE;
 
-            if (reg_x - 1..=reg_x + 1).contains(&cur_row_pos) {
+            if ((reg_x - 1)..=(reg_x + 1)).contains(&cur_row_pos) {
                 crt_row[cur_row_pos as usize] = PIXEL_LIT;
             }
 
@@ -52,8 +52,8 @@ fn solve(path: &str) -> io::Result<String> {
     let lines = crt
         .iter()
         .map(|elem| elem.iter().collect::<String>())
-        .collect::<Vec<_>>()
-        .join("\n");
+        .reduce(|acc, elem| acc + "\n" + &elem)
+        .unwrap();
 
     Ok(lines)
 }
@@ -64,28 +64,14 @@ mod test {
 
     #[test]
     fn sample() {
-        const OUTPUT: &str = "\
-##..##..##..##..##..##..##..##..##..##..
-###...###...###...###...###...###...###.
-####....####....####....####....####....
-#####.....#####.....#####.....#####.....
-######......######......######......####
-#######.......#######.......#######.....";
-
+        const OUTPUT: &str = include_str!("../../outputs/part_two/test.txt");
         let result = solve("inputs/test.txt").unwrap();
         assert_eq!(OUTPUT, &result)
     }
 
     #[test]
     fn puzzle() {
-        const OUTPUT: &str = "\
-###..####.#..#.####..##..###..####.####.
-#..#.#....#.#.....#.#..#.#..#.#....#....
-#..#.###..##.....#..#....#..#.###..###..
-###..#....#.#...#...#....###..#....#....
-#.#..#....#.#..#....#..#.#....#....#....
-#..#.#....#..#.####..##..#....####.#....";
-
+        const OUTPUT: &str = include_str!("../../outputs/part_two/puzzle.txt");
         let result = solve("inputs/puzzle.txt").unwrap();
         assert_eq!(OUTPUT, result);
     }

@@ -15,9 +15,9 @@ fn main() -> io::Result<()> {
 fn solve(path: &str) -> io::Result<i64> {
     let instructions = parse_input(path)?;
 
-    let mut cycles_total = 0;
-    let mut reg_x = 1;
-    let mut sig_strength_total = 0;
+    let mut cycles_total: i64 = 0;
+    let mut reg_x: i64 = 1;
+    let mut sig_strength_total: i64 = 0;
 
     for instruction in instructions {
         let (cycles, add_x) = match instruction {
