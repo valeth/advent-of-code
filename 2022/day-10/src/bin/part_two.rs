@@ -1,6 +1,6 @@
 use std::{env, io};
 
-use aoc_2022_10::{parse_input, Instruction};
+use aoc_2022_10::Device;
 
 fn main() -> io::Result<()> {
     let infile_path = env::args().nth(1).expect("input file");
@@ -12,42 +12,22 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
+type CrtRow = [char; 40];
+type Crt = Vec<CrtRow>;
+
 const PIXEL_LIT: char = '#';
 const PIXEL_UNLIT: char = '.';
 const DRAW_CYCLE: i64 = 40;
 
 fn solve(path: &str) -> io::Result<String> {
-    let instructions = parse_input(path)?;
+    let mut device = Device::initialize(path)?;
 
-    let mut crt = Vec::<[char; 40]>::new();
+    let mut crt = Crt::new();
     let mut crt_row = [PIXEL_UNLIT; 40];
 
-    let mut cycles_total: i64 = 0;
-    let mut reg_x: i64 = 1;
-
-    for instruction in instructions {
-        let (cycles, add_x) = match instruction {
-            Instruction::Noop => (1, 0),
-            Instruction::Addx(val) => (2, val),
-        };
-
-        for _ in 0..cycles {
-            let cur_row_pos = cycles_total % DRAW_CYCLE;
-
-            if ((reg_x - 1)..=(reg_x + 1)).contains(&cur_row_pos) {
-                crt_row[cur_row_pos as usize] = PIXEL_LIT;
-            }
-
-            cycles_total += 1;
-
-            if cycles_total % DRAW_CYCLE == 0 {
-                crt.push(crt_row);
-                crt_row = [PIXEL_UNLIT; 40];
-            }
-        }
-
-        reg_x += add_x;
-    }
+    device.for_each_cycle(|cycles_total, reg_x| {
+        compute_cycle(reg_x, cycles_total, &mut crt, &mut crt_row);
+    });
 
     let lines = crt
         .iter()
@@ -56,6 +36,22 @@ fn solve(path: &str) -> io::Result<String> {
         .unwrap();
 
     Ok(lines)
+}
+
+fn compute_cycle(reg_x: i64, cycles_total: &mut i64, crt: &mut Crt, crt_row: &mut CrtRow) {
+    let cur_row_pos = *cycles_total % DRAW_CYCLE;
+    let sprite_area = (reg_x - 1)..=(reg_x + 1);
+
+    if sprite_area.contains(&cur_row_pos) {
+        crt_row[cur_row_pos as usize] = PIXEL_LIT;
+    }
+
+    *cycles_total += 1;
+
+    if *cycles_total % DRAW_CYCLE == 0 {
+        crt.push(*crt_row);
+        *crt_row = [PIXEL_UNLIT; 40];
+    }
 }
 
 #[cfg(test)]
