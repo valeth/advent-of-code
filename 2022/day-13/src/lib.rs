@@ -1,4 +1,5 @@
 use std::{
+    cmp::Ordering,
     fmt,
     fs::File,
     io::{self, Read},
@@ -7,10 +8,31 @@ use std::{
 
 pub type Pair = (Segment, Segment);
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq)]
 pub enum Segment {
     Num(u32),
     List(Vec<Segment>),
+}
+
+impl Ord for Segment {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match (self, other) {
+            (Segment::Num(lval), Segment::Num(rval)) => lval.cmp(rval),
+            (Segment::List(lval), Segment::List(rval)) => test_segment_list(lval, rval),
+            (Segment::List(lval), rval @ Segment::Num(_)) => {
+                test_segment_list(lval, &[rval.clone()])
+            }
+            (lval @ Segment::Num(_), Segment::List(rval)) => {
+                test_segment_list(&[lval.clone()], rval)
+            }
+        }
+    }
+}
+
+impl PartialOrd for Segment {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(&other))
+    }
 }
 
 impl fmt::Debug for Segment {
@@ -18,6 +40,23 @@ impl fmt::Debug for Segment {
         match self {
             Self::Num(num) => write!(f, "{:?}", num),
             Self::List(elems) => f.debug_list().entries(elems).finish(),
+        }
+    }
+}
+
+fn test_segment_list(left: &[Segment], right: &[Segment]) -> Ordering {
+    let mut left = left.iter();
+    let mut right = right.iter();
+
+    loop {
+        match (left.next(), right.next()) {
+            (Some(lval), Some(rval)) => match lval.cmp(rval) {
+                Ordering::Equal => (),
+                ord => return ord,
+            },
+            (None, Some(_)) => return Ordering::Less,
+            (Some(_), None) => return Ordering::Greater,
+            (None, None) => return Ordering::Equal,
         }
     }
 }
