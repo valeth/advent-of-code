@@ -1,13 +1,19 @@
 use std::{collections::HashSet, env, io};
 
-use itertools::Itertools; // for easier chunking
-
 use aoc_2022_03::{item_priority, parse_file};
+use itertools::Itertools; // for easier chunking
 
 fn main() -> io::Result<()> {
     let infile_path = env::args().nth(1).expect("input file");
+    let result = solve(&infile_path)?;
 
-    let items = parse_file(infile_path)?.chunks(3);
+    println!("{result}");
+
+    Ok(())
+}
+
+fn solve(path: &str) -> io::Result<u32> {
+    let items = parse_file(path)?.chunks(3);
     let item_sum: u32 = items
         .into_iter()
         .map(|chunk| {
@@ -21,7 +27,28 @@ fn main() -> io::Result<()> {
         })
         .sum();
 
-    println!("{item_sum}");
+    Ok(item_sum)
+}
 
-    Ok(())
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn sample() -> io::Result<()> {
+        let result = solve("inputs/test.txt")?;
+
+        assert_eq!(70, result);
+
+        Ok(())
+    }
+
+    #[test]
+    fn puzzle() -> io::Result<()> {
+        let result = solve("inputs/puzzle.txt")?;
+
+        assert_eq!(2681, result);
+
+        Ok(())
+    }
 }

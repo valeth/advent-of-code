@@ -7,7 +7,16 @@ const REQUIRED_SIZE: usize = 30_000_000;
 
 fn main() -> io::Result<()> {
     let infile_path = env::args().nth(1).expect("input file");
-    let paths = parse_input(infile_path)?;
+
+    let result = solve(&infile_path)?;
+
+    println!("{result}");
+
+    Ok(())
+}
+
+fn solve(path: &str) -> io::Result<usize> {
+    let paths = parse_input(path)?;
 
     let mut sizes = DirMap::new();
     path_sizes(&paths, &mut sizes);
@@ -23,7 +32,28 @@ fn main() -> io::Result<()> {
 
     let smol = values.iter().min().unwrap();
 
-    println!("{smol}");
+    Ok(**smol)
+}
 
-    Ok(())
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn sample() -> io::Result<()> {
+        let result = solve("inputs/test.txt")?;
+
+        assert_eq!(24933642, result);
+
+        Ok(())
+    }
+
+    #[test]
+    fn puzzle() -> io::Result<()> {
+        let result = solve("inputs/puzzle.txt")?;
+
+        assert_eq!(10475598, result);
+
+        Ok(())
+    }
 }

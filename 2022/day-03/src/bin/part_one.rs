@@ -4,8 +4,15 @@ use aoc_2022_03::{item_priority, parse_file};
 
 fn main() -> io::Result<()> {
     let infile_path = env::args().nth(1).expect("input file");
+    let result = solve(&infile_path)?;
 
-    let sum_of_items: u32 = parse_file(infile_path)?
+    println!("{result}");
+
+    Ok(())
+}
+
+fn solve(path: &str) -> io::Result<u32> {
+    let sum_of_items: u32 = parse_file(path)?
         .map(|line| {
             let (left, right) = line.split_at(line.len() / 2);
             let left: HashSet<_> = left.chars().collect();
@@ -15,7 +22,28 @@ fn main() -> io::Result<()> {
         })
         .sum();
 
-    println!("{sum_of_items}");
+    Ok(sum_of_items)
+}
 
-    Ok(())
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn sample() -> io::Result<()> {
+        let result = solve("inputs/test.txt")?;
+
+        assert_eq!(157, result);
+
+        Ok(())
+    }
+
+    #[test]
+    fn puzzle() -> io::Result<()> {
+        let result = solve("inputs/puzzle.txt")?;
+
+        assert_eq!(8349, result);
+
+        Ok(())
+    }
 }

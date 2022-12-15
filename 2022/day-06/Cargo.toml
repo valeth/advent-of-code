@@ -3,5 +3,11 @@ name = "aoc-2022-06"
 version = "0.1.0"
 edition = "2021"
 
+
+[lib]
+test = false
+doctest = false
+
+
 [dependencies]
 itertools = "0.10"
