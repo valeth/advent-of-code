@@ -1,7 +1,7 @@
 const std = @import("std");
 const alloc = std.heap.page_allocator;
 const List = std.ArrayList;
-const HashMap = std.AutoHashMap(MappingKey, Mapping);
+pub const Mappings = std.AutoHashMap(MappingKey, Mapping);
 pub const Idx = u64;
 
 pub const SeedList = List(Idx);
@@ -40,7 +40,7 @@ pub const Mapping = struct {
 };
 
 pub const Input = struct {
-    mappings: HashMap,
+    mappings: Mappings,
     seeds: SeedList,
 };
 
@@ -52,7 +52,7 @@ pub const MappingRange = struct {
 pub fn parse(data: []const u8) !Input {
     var lines = std.mem.tokenizeSequence(u8, data, "\n");
 
-    var mappings = HashMap.init(alloc);
+    var mappings = Mappings.init(alloc);
     var seeds: SeedList = undefined;
     var mapping_types: [2]MappingType = undefined;
     var dest_ranges = List(MappingRange).init(alloc);
