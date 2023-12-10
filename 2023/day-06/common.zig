@@ -13,6 +13,36 @@ pub const Races = struct {
 
 const List = std.ArrayList;
 
+pub fn calculate(time: u64, record_dist: u64) u64 {
+    var min: u64 = undefined;
+
+    for (1..time) |speed| {
+        const rem_race_time = time - speed;
+        const dist = rem_race_time * speed;
+        if (dist > record_dist) {
+            min = @intCast(speed);
+            break;
+        }
+    }
+
+    var max: u64 = undefined;
+
+    var speed: u64 = time - 1;
+    while (speed > 0) {
+        const rem_race_time = time - speed;
+        const dist = rem_race_time * speed;
+
+        if (dist > record_dist) {
+            max = speed;
+            break;
+        }
+
+        speed -= 1;
+    }
+
+    return max - min + 1;
+}
+
 pub fn parse(data: []const u8) !Races {
     var lines = std.mem.tokenizeScalar(u8, data, '\n');
 
