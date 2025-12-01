@@ -1,0 +1,16 @@
+all: part_one part_two
+
+@part_one: build_one
+    ./part_one inputs/puzzle.txt
+
+@part_two: build_two
+    ./part_two inputs/puzzle.txt
+
+build_one:
+    rustc --edition 2024 -o part_one part_one.rs
+
+build_two:
+    rustc --edition 2024 -o part_two part_two.rs
+
+clean:
+    rm part_one part_two
