@@ -12,4 +12,4 @@
 -   [2022](2022/README.md) (54% completed)
 -   [2023](2023/README.md) (26% completed)
 -   [2024](2024/README.md) (16% completed)
--   [2025](2025/README.md) (33% completed)
+-   [2025](2025/README.md) (42% completed)
