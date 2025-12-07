@@ -1,16 +1,23 @@
+[parallel]
 all: part_one part_two
 
+OPT_FLAGS := "-O -C codegen-units=1 -C panic=abort"
+
+[group("run")]
 @part_one INPUT="inputs/puzzle.txt": build_one
     ./part_one {{INPUT}}
 
+[group("run")]
 @part_two INPUT="inputs/puzzle.txt": build_two
     ./part_two {{INPUT}}
 
+[group("build")]
 build_one:
-    rustc --edition 2024 -o part_one part_one.rs
+    rustc {{OPT_FLAGS}} --edition 2024 -o part_one part_one.rs
 
+[group("build")]
 build_two:
-    rustc --edition 2024 -o part_two part_two.rs
+    rustc {{OPT_FLAGS}} --edition 2024 -o part_two part_two.rs
 
 clean:
     rm part_one part_two

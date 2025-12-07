@@ -29,14 +29,19 @@ fn solve(input: Vec<Pos>) -> u64 {
 
 fn main() -> Result<()> {
     let infile = env::args().nth(1).expect("input file path");
+
+    let start = std::time::Instant::now();
     let input = parse(infile)?;
+    let parse_time = start.elapsed();
 
     let start = std::time::Instant::now();
     let solution = solve(input);
-    let end = start.elapsed();
+    let solution_time = start.elapsed();
 
-    println!("Time: {:?}", end);
-    println!("{solution}");
+    let total_time = parse_time + solution_time;
+    println!("Part 2:");
+    println!("  Time: {parse_time:.3?} (parse) + {solution_time:.3?} (solve) = {total_time:.3?}");
+    println!("  {solution}");
 
     Ok(())
 }
