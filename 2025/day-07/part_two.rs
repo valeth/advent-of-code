@@ -33,7 +33,13 @@ fn solve(input: Vec<Vec<Pos>>) -> u64 {
 fn main() -> Result<()> {
     let infile = env::args().nth(1).expect("input file path");
     let input = parse(infile)?;
-    println!("{}", solve(input));
+
+    let start = std::time::Instant::now();
+    let solution = solve(input);
+    let end = start.elapsed();
+
+    println!("Time: {:?}", end);
+    println!("{solution}");
 
     Ok(())
 }
