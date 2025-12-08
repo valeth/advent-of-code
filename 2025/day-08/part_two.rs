@@ -8,9 +8,23 @@ use common::{parse, all_distances, Result, JunctionBoxes};
 
 fn main() -> Result<()> {
     let infile = env::args().nth(1).expect("input file");
+    let is_puzzle = infile.contains("puzzle");
+
+    let parse_time = std::time::Instant::now();
     let input = parse(infile)?;
+    let parse_time = parse_time.elapsed();
+
+    let solve_time = std::time::Instant::now();
     let solution = solve(input);
-    println!("{solution}");
+    let solve_time = solve_time.elapsed();
+
+    if is_puzzle {
+        assert_eq!(solution, 3926518899);
+    }
+
+    println!("Part 2:");
+    println!("  Time: {parse_time:.3?} (parse) + {solve_time:.3?} (solve) = {:.3?}", parse_time + solve_time);
+    println!("  {solution}");
 
     Ok(())
 }

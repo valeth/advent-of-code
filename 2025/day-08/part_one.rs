@@ -8,16 +8,25 @@ use common::{parse, all_distances, Result, ArrayList, JunctionBoxes};
 
 fn main() -> Result<()> {
     let infile = env::args().nth(1).expect("input file");
+    let is_puzzle = infile.contains("puzzle");
 
-    let num_pairs = if infile.contains("puzzle") {
-        1000
-    } else {
-        10
-    };
-
+    let parse_time = std::time::Instant::now();
     let input = parse(infile)?;
+    let parse_time = parse_time.elapsed();
+
+    let num_pairs = if is_puzzle { 1000 } else { 10 };
+
+    let solve_time = std::time::Instant::now();
     let solution = solve(input, num_pairs);
-    println!("{solution}");
+    let solve_time = solve_time.elapsed();
+
+    if is_puzzle {
+        assert_eq!(solution, 72150);
+    }
+
+    println!("Part 1:");
+    println!("  Time: {parse_time:.3?} (parse) + {solve_time:.3?} (solve) = {:.3?}", parse_time + solve_time);
+    println!("  {solution}");
 
     Ok(())
 }
@@ -44,12 +53,14 @@ fn solve(boxes: JunctionBoxes, num_pairs: usize) -> u32 {
         }
     }
 
-    let mut distinct = circuits.into_iter().fold(ArrayList::new(), |mut acc, (_, circuit)| {
-        if !acc.contains(&circuit) {
-            acc.push(circuit);
-        }
-        acc
-    });
+    let mut distinct = circuits
+        .values()
+        .fold(ArrayList::new(), |mut acc, circuit| {
+            if !acc.contains(&circuit) {
+                acc.push(circuit);
+            }
+            acc
+        });
 
     distinct.sort_by_key(|c| c.len());
     distinct.into_iter().rev().take(3).map(|c| c.len() as u32).product()
