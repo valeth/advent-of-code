@@ -1,9 +1,12 @@
 mod common;
 
 use std::env;
+use std::thread;
+use std::sync::atomic;
 use common::{parse, Result, Tiles, Vec2};
 
 
+type ArrayList<T> = Vec<T>;
 type Rect = (Vec2, Vec2);
 
 
@@ -32,21 +35,37 @@ fn main() -> Result<()> {
 
 
 fn solve(tiles: Tiles) -> u64 {
-    let mut max_area = 0;
+    let mut rects = ArrayList::new();
 
     for (idx1, tile1) in tiles.iter().enumerate() {
         for tile2 in tiles.iter().skip(idx1 + 1) {
             let dx = tile1.x.abs_diff(tile2.x) + 1;
             let dy = tile1.y.abs_diff(tile2.y) + 1;
-
-            let area = dx * dy;
-            if area > max_area && rect_inside_area((*tile1, *tile2), &tiles) {
-                max_area = area;
-            }
+            rects.push(((*tile1, *tile2), dx * dy));
         }
     }
 
-    max_area
+    let max_area = atomic::AtomicU64::new(0);
+
+    const THREADS: usize = 6;
+
+    thread::scope(|scope| {
+        for chunk in rects.chunks(rects.len() / THREADS) {
+            let tiles = &tiles;
+            let chunk = chunk.to_vec(); // Vec::into_chunks is not stable, so we just clone here
+            scope.spawn(|| {
+                for (rect, area) in chunk {
+                    if max_area.load(atomic::Ordering::SeqCst) < area && rect_inside_area(rect, tiles) {
+                        max_area.store(area, atomic::Ordering::SeqCst);
+                    }
+                }
+
+            });
+        }
+
+    });
+
+    max_area.into_inner()
 }
 
 
