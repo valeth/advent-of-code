@@ -1,8 +1,6 @@
 mod common;
 
 use std::env;
-use std::thread;
-use std::sync::atomic;
 use common::{parse, Result, Tiles, Vec2};
 
 
@@ -35,6 +33,19 @@ fn main() -> Result<()> {
 
 
 fn solve(tiles: Tiles) -> u64 {
+    let rects = get_rects_with_area(&tiles);
+
+    for (rect, area) in rects.into_iter().rev() {
+        if rect_inside_area(rect, &tiles) {
+            return area;
+        }
+    }
+
+    panic!("not inside area");
+}
+
+
+fn get_rects_with_area(tiles: &Tiles) -> ArrayList<(Rect, u64)> {
     let mut rects = ArrayList::new();
 
     for (idx1, tile1) in tiles.iter().enumerate() {
@@ -45,32 +56,14 @@ fn solve(tiles: Tiles) -> u64 {
         }
     }
 
-    let max_area = atomic::AtomicU64::new(0);
-
-    const THREADS: usize = 6;
-
-    thread::scope(|scope| {
-        for chunk in rects.chunks(rects.len() / THREADS) {
-            let tiles = &tiles;
-            let chunk = chunk.to_vec(); // Vec::into_chunks is not stable, so we just clone here
-            scope.spawn(|| {
-                for (rect, area) in chunk {
-                    if max_area.load(atomic::Ordering::SeqCst) < area && rect_inside_area(rect, tiles) {
-                        max_area.store(area, atomic::Ordering::SeqCst);
-                    }
-                }
-
-            });
-        }
-
-    });
-
-    max_area.into_inner()
+    rects.sort_by_key(|r| r.1);
+    rects
 }
-
 
 // This works but is incredibly slow, probably doing a lot of redundant checks
 fn rect_inside_area(rect: Rect, tiles: &Tiles) -> bool {
+    const RESOLUTION: usize = 100;
+
     let (point1, point2) = rect;
 
     let x_max = point1.x.max(point2.x);
@@ -78,7 +71,9 @@ fn rect_inside_area(rect: Rect, tiles: &Tiles) -> bool {
     let y_max = point1.y.max(point2.y);
     let y_min = point1.y.min(point2.y);
 
-    for y in y_min..=y_max {
+    let height = (y_max - y_min) as usize;
+    let steps = (height / RESOLUTION).max(1);
+    for y in (y_min..=y_max).step_by(steps) {
         if !point_inside(Vec2 { x: x_min, y }, &tiles) {
             return false;
         }
@@ -88,7 +83,9 @@ fn rect_inside_area(rect: Rect, tiles: &Tiles) -> bool {
         }
     }
 
-    for x in x_min+1..x_max {
+    let width = (x_max - x_min) as usize;
+    let steps = (width / RESOLUTION).max(1);
+    for x in (x_min+1..x_max).step_by(steps) {
         if !point_inside(Vec2 { x, y: y_min }, &tiles) {
             return false;
         }
